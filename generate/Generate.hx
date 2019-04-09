@@ -13,7 +13,7 @@ class Generate {
 
 /// Public properties
 
-    /** Generated file contents as values, relative paths as keys */
+    /** Generated file contents as values, type paths as keys */
     public var files = new Map<String,String>();
 
 /// Lifecycle
@@ -80,12 +80,12 @@ class Generate {
             }
             else {
                 // Nope, then generate a class
-                generateClass(name, input, pack);
+                generateClass(name, input, pack, true);
             }
         }
         else {
             // Nope, then generate a class
-            generateClass(name, input, pack);
+            generateClass(name, input, pack, true);
         }
 
     } //generateDataHaxeFiles
@@ -94,13 +94,137 @@ class Generate {
 
     function generateEnumAbstract(name:String, input:Dynamic, type:String, pack:Array<String>) {
 
-        // TODO
+        var content = new StringBuf();
+
+        content.add('\n');
+        content.add('@:enum abstract ');
+        content.add(name);
+        content.add('(');
+        content.add(type);
+        content.add(') from ');
+        content.add(type);
+        content.add(' to ');
+        content.add(type);
+        content.add(' {\n\n');
+
+        var nullValue = 'null';
+        if (type == 'Int' || type == 'Float') {
+            nullValue = '0';
+        }
+        else if (type == 'Bool') {
+            nullValue = 'false';
+        }
+
+        // Add fields
+        for (key in Reflect.fields(input)) {
+            var value = Reflect.field(input, key);
+
+            content.add('    var ');
+            content.add(key);
+            content.add(' = ');
+            if (value != null) {
+                content.add(Std.string(value));
+            } else {
+                content.add(nullValue);
+            }
+            content.add(';\n\n');
+        }
+
+        content.add('} //$name\n');
+        content.add('\n');
+
+        files.set(
+            (pack.length > 0 ? pack.join('.') + '.' : '') + name,
+            content.toString()
+        );
 
     } //generateEnumAbstract
 
-    function generateClass(name:String, input:Dynamic, pack:Array<String>) {
+    function generateClass(name:String, input:Dynamic, pack:Array<String>, staticFields:Bool) {
 
-        // TODO
+        var content = new StringBuf();
+
+        content.add('\n');
+        content.add('class ');
+        content.add(name);
+        content.add(' {\n\n');
+
+        content.add('    @:noCompletion private function new() {}\n\n');
+
+        // Add fields
+        for (key in Reflect.fields(input)) {
+            var value = Reflect.field(input, key);
+
+            var isSubType = false;
+            var isInt = false;
+            var isFloat = false;
+            var isBool = false;
+            var isString = false;
+            var isNull = false;
+
+            if (Std.is(value, Int)) {
+                isInt = true;
+            }
+            else if (Std.is(value, Float)) {
+                isFloat = true;
+            }
+            else if (Std.is(value, Bool)) {
+                isBool = true;
+            }
+            else if (Std.is(value, String)) {
+                isString = true;
+            }
+            else if (value != null) {
+                isSubType = true;
+            }
+
+            if (isSubType) {
+                if (staticFields) {
+                    content.add('    public static var ');
+                } else {
+                    content.add('    public var ');
+                }
+            } else {
+                if (staticFields) {
+                    content.add('    public inline static var ');
+                } else {
+                    content.add('    public inline var ');
+                }
+            }
+
+            content.add(key);
+            if (isInt || isFloat) {
+                content.add(' = ');
+                content.add(Std.string(value));
+            }
+            else if (isBool) {
+                content.add(' = ');
+                content.add(value ? 'true' : 'false');
+            }
+            else if (isString) {
+                content.add(' = ');
+                content.add(value);
+            }
+            else if (isSubType) {
+                var className = name + '_' + key;
+                generateClass(className, value, pack, false);
+                content.add(' = @:privateAccess new ');
+                content.add(className);
+                content.add('()');
+            }
+            else { //isNull
+                content.add(':Dynamic = null');
+            }
+            content.add(';\n\n');
+        }
+
+        content.add('} //$name\n');
+        content.add('\n');
+
+        files.set(
+            (pack.length > 0 ? pack.join('.') + '.' : '') + name,
+            content.toString()
+        );
 
     } //generateClass
 
