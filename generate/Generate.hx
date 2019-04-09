@@ -1,12 +1,6 @@
 package generate;
 
-@:enum abstract TestEnum(Float) from Float to Float {
-
-    public var VAL_A = 0.2;
-
-    public var VAL_B = 2;
-
-} //TestEnum
+import haxe.Json;
 
 /** Generate data haxe code from data */
 class Generate {
@@ -19,13 +13,6 @@ class Generate {
 /// Lifecycle
 
     public function new() {
-
-        var kind:TestEnum = VAL_A;
-
-        switch (kind) {
-            case VAL_A: trace('kind A: $kind');
-            case VAL_B: trace('kind B: $kind');
-        }
 
     } //new
 
@@ -108,11 +95,17 @@ class Generate {
         content.add(' {\n\n');
 
         var nullValue = 'null';
+        var isString = false;
+        var isBool = false;
         if (type == 'Int' || type == 'Float') {
             nullValue = '0';
         }
         else if (type == 'Bool') {
             nullValue = 'false';
+            isBool = true;
+        }
+        else if (type == 'String') {
+            isString = true;
         }
 
         // Add fields
@@ -123,7 +116,15 @@ class Generate {
             content.add(key);
             content.add(' = ');
             if (value != null) {
-                content.add(Std.string(value));
+                if (isString) {
+                    content.add(Json.stringify(value));
+                }
+                else if (isBool) {
+                    content.add(value ? 'true' : 'false');
+                }
+                else {
+                    content.add(Std.string(value));
+                }
             } else {
                 content.add(nullValue);
             }
@@ -149,7 +150,7 @@ class Generate {
         content.add(name);
         content.add(' {\n\n');
 
-        content.add('    @:noCompletion private function new() {}\n\n');
+        if (!staticFields) content.add('    @:noCompletion private function new() {}\n\n');
 
         // Add fields
         for (key in Reflect.fields(input)) {
@@ -160,7 +161,6 @@ class Generate {
             var isFloat = false;
             var isBool = false;
             var isString = false;
-            var isNull = false;
 
             if (Std.is(value, Int)) {
                 isInt = true;
@@ -193,17 +193,21 @@ class Generate {
             }
 
             content.add(key);
-            if (isInt || isFloat) {
-                content.add(' = ');
+            if (isInt) {
+                content.add(':Int = ');
+                content.add(Std.string(value));
+            }
+            else if (isFloat) {
+                content.add(':Float = ');
                 content.add(Std.string(value));
             }
             else if (isBool) {
-                content.add(' = ');
+                content.add(':Bool = ');
                 content.add(value ? 'true' : 'false');
             }
             else if (isString) {
-                content.add(' = ');
-                content.add(value);
+                content.add(':String = ');
+                content.add(Json.stringify(value));
             }
             else if (isSubType) {
                 var className = name + '_' + key;

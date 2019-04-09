@@ -1,0 +1,8 @@
+{
+    "AAA": true,
+    "BBB": false,
+    "CCC": 3,
+    "DDD": 3.5,
+    "EEE": "Hello",
+    "FFF": null
+}
