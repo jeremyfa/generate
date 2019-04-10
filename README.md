@@ -128,3 +128,4 @@ However, it could be improved to:
 
 - Handle arrays in JSON data
 - Have a bit more options?
+- Write result files to a specified directory
