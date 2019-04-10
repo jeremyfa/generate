@@ -49,9 +49,9 @@ Given this JSON data:
 
 ```json
 {
-    AAA: 1,
-    BBB: 2,
-    CCC: 3
+    "AAA": 1,
+    "BBB": 2,
+    "CCC": 3
 }
 ```
 
