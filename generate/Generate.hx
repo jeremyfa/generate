@@ -83,6 +83,15 @@ class Generate {
 
         var content = new StringBuf();
 
+        if (pack.length > 0) {
+            content.add('package ');
+            content.add(pack.join('.'));
+            content.add(';\n');
+        }
+        else {
+            content.add('package;\n');
+        }
+
         content.add('\n');
         content.add('@:enum abstract ');
         content.add(name);
@@ -144,6 +153,15 @@ class Generate {
     function generateClass(name:String, input:Dynamic, pack:Array<String>, staticFields:Bool) {
 
         var content = new StringBuf();
+
+        if (pack.length > 0) {
+            content.add('package ');
+            content.add(pack.join('.'));
+            content.add(';\n');
+        }
+        else {
+            content.add('package;\n');
+        }
 
         content.add('\n');
         content.add('class ');
