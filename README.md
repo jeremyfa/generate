@@ -122,7 +122,7 @@ class MyData_CCC {
 
 ## Possible improvements
 
-**generate** utility should work fine for the cases (see tested json files in `tests/` directory).
+**generate** utility should work fine for the above cases and the ones tested in `generate/Test.hx` (see json test files in `tests/` directory).
 
 However, it could be improved to:
 
