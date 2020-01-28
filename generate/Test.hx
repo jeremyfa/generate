@@ -12,7 +12,7 @@ class Test {
             test('data$i');
         }
 
-    } //main
+    }
 
 /// Tests
 
@@ -44,4 +44,4 @@ class Test {
         #end
     }
 
-} //Test
+}

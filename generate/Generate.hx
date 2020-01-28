@@ -14,7 +14,7 @@ class Generate {
 
     public function new() {
 
-    } //new
+    }
 
 /// Public API
 
@@ -75,7 +75,7 @@ class Generate {
             generateClass(name, input, pack, true);
         }
 
-    } //generateDataHaxeFiles
+    }
 
 /// Internal
 
@@ -148,7 +148,7 @@ class Generate {
             content.toString()
         );
 
-    } //generateEnumAbstract
+    }
 
     function generateClass(name:String, input:Dynamic, pack:Array<String>, staticFields:Bool) {
 
@@ -248,6 +248,6 @@ class Generate {
             content.toString()
         );
 
-    } //generateClass
+    }
 
-} //Generate
+}
