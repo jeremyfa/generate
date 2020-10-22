@@ -2,8 +2,14 @@ package generate;
 
 import haxe.Json;
 
+using StringTools;
+
 /** Generate data haxe code from data */
 class Generate {
+
+/// Options
+
+    public var keep:Bool = true;
 
 /// Public properties
 
@@ -93,6 +99,9 @@ class Generate {
         }
 
         content.add('\n');
+        if (keep) {
+            content.add('@:keep @:keepSub ');
+        }
         content.add('@:enum abstract ');
         content.add(name);
         content.add('(');
@@ -121,7 +130,11 @@ class Generate {
         for (key in Reflect.fields(input)) {
             var value = Reflect.field(input, key);
 
-            content.add('    var ');
+            content.add('    ');
+            if (key.startsWith('_')) {
+                content.add('@:noCompletion ');
+            }
+            content.add('var ');
             content.add(key);
             content.add(' = ');
             if (value != null) {
@@ -164,6 +177,9 @@ class Generate {
         }
 
         content.add('\n');
+        if (keep) {
+            content.add('@:keep @:keepSub ');
+        }
         content.add('class ');
         content.add(name);
         content.add(' {\n\n');
@@ -196,17 +212,23 @@ class Generate {
                 isSubType = true;
             }
 
+            key = sanitizeKeyForField(key);
+
+            content.add('    ');
+            if (key.startsWith('_')) {
+                content.add('@:noCompletion ');
+            }
             if (isSubType) {
                 if (staticFields) {
-                    content.add('    public static var ');
+                    content.add('public static final ');
                 } else {
-                    content.add('    public var ');
+                    content.add('public final ');
                 }
             } else {
                 if (staticFields) {
-                    content.add('    public inline static var ');
+                    content.add('public inline static final ');
                 } else {
-                    content.add('    public inline var ');
+                    content.add('public final ');
                 }
             }
 
@@ -247,6 +269,16 @@ class Generate {
             (pack.length > 0 ? pack.join('.') + '.' : '') + name,
             content.toString()
         );
+
+    }
+
+    function sanitizeKeyForField(key:String):String {
+
+        var code = key.charCodeAt(0);
+        if (code >= '0'.code && code <= '9'.code) {
+            key = '_' + key;
+        }
+        return key;
 
     }
 
