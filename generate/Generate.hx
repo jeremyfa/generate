@@ -38,16 +38,16 @@ class Generate {
         for (key in Reflect.fields(input)) {
             var value = Reflect.field(input, key);
             if (value != null) {
-                if (Std.is(value, Int)) {
+                if (Std.isOfType(value, Int)) {
                     hasInts = true;
                 }
-                else if (Std.is(value, Float)) {
+                else if (Std.isOfType(value, Float)) {
                     hasFloats = true;
                 }
-                else if (Std.is(value, Bool)) {
+                else if (Std.isOfType(value, Bool)) {
                     hasBools = true;
                 }
-                else if (Std.is(value, String)) {
+                else if (Std.isOfType(value, String)) {
                     hasStrings = true;
                 }
                 else {
@@ -196,16 +196,16 @@ class Generate {
             var isBool = false;
             var isString = false;
 
-            if (Std.is(value, Int)) {
+            if (Std.isOfType(value, Int)) {
                 isInt = true;
             }
-            else if (Std.is(value, Float)) {
+            else if (Std.isOfType(value, Float)) {
                 isFloat = true;
             }
-            else if (Std.is(value, Bool)) {
+            else if (Std.isOfType(value, Bool)) {
                 isBool = true;
             }
-            else if (Std.is(value, String)) {
+            else if (Std.isOfType(value, String)) {
                 isString = true;
             }
             else if (value != null) {
