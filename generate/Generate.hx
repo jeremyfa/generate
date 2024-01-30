@@ -102,7 +102,7 @@ class Generate {
         if (keep) {
             content.add('@:keep @:keepSub ');
         }
-        content.add('@:enum abstract ');
+        content.add('enum abstract ');
         content.add(name);
         content.add('(');
         content.add(type);

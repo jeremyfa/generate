@@ -60,7 +60,7 @@ Given this JSON data:
 ```haxe
 package my.data;
 
-@:enum abstract MyData(Int) from Int to Int {
+enum abstract MyData(Int) from Int to Int {
 
     var AAA = 1;
 
