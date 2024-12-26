@@ -36,7 +36,7 @@ class Generate {
 
         // Gather info to determine which haxe construct is best
         for (key in Reflect.fields(input)) {
-            var value = Reflect.field(input, key);
+            var value:Dynamic = Reflect.field(input, key);
             if (value != null) {
                 if (Std.isOfType(value, Int)) {
                     hasInts = true;
@@ -128,7 +128,7 @@ class Generate {
 
         // Add fields
         for (key in Reflect.fields(input)) {
-            var value = Reflect.field(input, key);
+            var value:Dynamic = Reflect.field(input, key);
 
             content.add('    ');
             if (key.startsWith('_')) {
@@ -188,7 +188,7 @@ class Generate {
 
         // Add fields
         for (key in Reflect.fields(input)) {
-            var value = Reflect.field(input, key);
+            var value:Dynamic = Reflect.field(input, key);
 
             var isSubType = false;
             var isInt = false;
